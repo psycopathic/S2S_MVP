@@ -4,19 +4,34 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function Dashboard() {
-  const [affiliateId, setAffiliateId] = useState(1);
+  const [affiliates, setAffiliates] = useState([]);
+  const [affiliateId, setAffiliateId] = useState("");
   const [data, setData] = useState({ clicks: [], conversions: [] });
   const [loading, setLoading] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
 
+  // Fetch all affiliates to populate dropdown
+  const fetchAffiliates = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/affiliate/getAll"); // your /affiliate route returns all affiliates
+      setAffiliates(res.data);
+      if (!affiliateId && res.data.length) setAffiliateId(res.data[0].id);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch affiliates");
+    }
+  };
+
+  // Fetch clicks & conversions for selected affiliate
   const fetchDashboard = async (id) => {
+    console.log("id", id);
     setLoading(true);
     try {
       const res = await axios.get(`http://localhost:4000/affiliate/${id}`);
-      console.log(res.data.conversions);
+      // console.log(res.data);
       setData(res.data);
 
-      // calculate total revenue
+      // Calculate total revenue
       const total = res.data.conversions.reduce(
         (sum, conv) => sum + parseFloat(conv.amount || 0),
         0
@@ -30,22 +45,29 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchDashboard(affiliateId);
+    fetchAffiliates();
+  }, []);
+
+  useEffect(() => {
+    if (affiliateId) fetchDashboard(affiliateId);
   }, [affiliateId]);
 
   return (
     <main className="flex flex-col items-center min-h-screen p-6">
-      <h1 className="text-2xl font-bold mb-4">Affiliate Dashboard</h1>
+      <h1 className="text-4xl font-bold mb-4 underline">Affiliate Dashboard</h1>
 
       <div className="mb-4">
-        <label className="mr-2 font-semibold">Select Affiliate:</label>
+        <label className="mr-2 font-bold">Select Affiliate:</label>
         <select
           value={affiliateId}
           onChange={(e) => setAffiliateId(Number(e.target.value))}
           className="border px-2 py-1 rounded"
         >
-          <option value={1}>Affiliate 1</option>
-          <option value={2}>Affiliate 2</option>
+          {affiliates.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -72,8 +94,7 @@ export default function Dashboard() {
                 {data.clicks.map((click) => (
                   <tr key={click.id}>
                     <td className="border px-2 py-1">{click.click_id}</td>
-                    <td className="border px-2 py-1">{click.campaign_id}</td>
-                    <td className="border px-2 py-1">{click.currency}</td>
+                    <td className="border px-2 py-1">{click.campaign_id || click.campaign_name}</td>
                     <td className="border px-2 py-1">
                       {new Date(click.created_at).toLocaleString()}
                     </td>
