@@ -1,0 +1,25 @@
+
+CREATE TABLE IF NOT EXISTS affiliates (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS campaigns (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS clicks (
+    id SERIAL PRIMARY KEY,
+    affiliate_id INT REFERENCES affiliates(id) ON DELETE CASCADE,
+    campaign_id INT REFERENCES campaigns(id) ON DELETE CASCADE,
+    click_id UUID UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS conversions (
+    id SERIAL PRIMARY KEY,
+    click_id UUID REFERENCES clicks(click_id) ON DELETE CASCADE,
+    revenue NUMERIC(10,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
