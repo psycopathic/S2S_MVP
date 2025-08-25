@@ -17,9 +17,6 @@ A **postback** is a server to server notification mechanism commonly used in aff
 
 ## **2. Running the Project Locally**
 
-- [Node.js](https://nodejs.org/) (v18+ recommended)<br/>
-- [PostgreSQL](https://www.postgresql.org/) (v14+ recommended)<br/>
-- [npm](https://www.npmjs.com/)<br/>
 
 ### **Step 1: Clone the Repository**
 
