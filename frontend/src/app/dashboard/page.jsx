@@ -42,7 +42,7 @@ export default function Dashboard() {
         (sum, conv) => sum + parseFloat(conv.amount || 0),
         0
       );
-      setTotalRevenue(total);
+      setTotalRevenue(total*87.46);
     } catch (err) {
       console.error(err);
       alert("Failed to fetch dashboard");
@@ -146,7 +146,7 @@ export default function Dashboard() {
               <thead>
                 <tr className="bg-gray-200">
                   <th className="border px-4 py-2">Click ID</th>
-                  <th className="border px-4 py-2">Amount (Rs.)</th>
+                  <th className="border px-4 py-2">Amount ($)</th>
                   <th className="border px-4 py-2">Timestamp</th>
                 </tr>
               </thead>

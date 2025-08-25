@@ -27,7 +27,7 @@ const AffiliateCard = ({ id }) => {
         (sum, conv) => sum + parseFloat(conv.amount || 0),
         0
       );
-      setTotalRevenue(total);
+      setTotalRevenue(total*87.46);
     } catch (error) {
       console.error(error);
       setAffiliateData({ clicks: [], conversions: [] });
